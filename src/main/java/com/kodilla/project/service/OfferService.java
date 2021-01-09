@@ -3,12 +3,14 @@ package com.kodilla.project.service;
 import com.kodilla.project.domain.dto.OfferDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class OfferService {
@@ -32,7 +34,17 @@ public class OfferService {
     private RestTemplate restTemplate = new RestTemplate();
 
     public List<OfferDto> getOffers() throws HttpServerErrorException {
-        List<OfferDto> allOffers = restTemplate.getForObject("http://localhost:8080/v1/offers", List.class);
+        List<OfferDto> allOffers = restTemplate.getForObject("http://localhost:8080/v1/offer", List.class);
+
+        if(allOffers != null) {
+            return allOffers;
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    public List<OfferDto> getOffersByName(String name) throws HttpClientErrorException {
+        List<OfferDto> allOffers = restTemplate.getForObject("http://localhost:8080/v1/offer/name" + name, List.class);
 
         if(allOffers != null) {
             return allOffers;
@@ -42,7 +54,7 @@ public class OfferService {
     }
 
     public OfferDto getOffer(final Long id) throws HttpServerErrorException {
-        OfferDto offerDto = restTemplate.getForObject("http://localhost:8080/v1/offers/" + id, OfferDto.class);
+        OfferDto offerDto = restTemplate.getForObject("http://localhost:8080/v1/offer/" + id, OfferDto.class);
 
         if(offerDto != null) {
             return offerDto;
@@ -52,14 +64,14 @@ public class OfferService {
     }
 
     public void createOffer(final OfferDto offerDto) throws HttpServerErrorException {
-        restTemplate.postForObject("http://localhost:8080/v1/offers", offerDto, OfferDto.class);
+        restTemplate.postForObject("http://localhost:8080/v1/offer", offerDto, OfferDto.class);
     }
 
     public void updateOffer(final OfferDto offerDto) throws HttpServerErrorException {
-        restTemplate.put("http://localhost:8080/v1/offers", offerDto, OfferDto.class);
+        restTemplate.put("http://localhost:8080/v1/offer", offerDto, OfferDto.class);
     }
 
     public void deleteOffer(final Long id) throws HttpServerErrorException {
-        restTemplate.delete("http://localhost:8080/v1/offers/" + id);
+        restTemplate.delete("http://localhost:8080/v1/offer/" + id);
     }
 }

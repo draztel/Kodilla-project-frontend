@@ -15,19 +15,4 @@ public class JokeService {
         JokeDto jokeDto = new JokeDto("id", "type", "setup", "punchline");
         return jokeDto;
     }
-
-    public List<JokeDto> getTenRandomJokes() {
-        List<JokeDto> jokeDtoList = new ArrayList<>();
-        jokeDtoList.add(new JokeDto("1", "type", "setup", "punchline"));
-        jokeDtoList.add(new JokeDto("2", "type", "setup", "punchline"));
-        jokeDtoList.add(new JokeDto("3", "type", "setup", "punchline"));
-        jokeDtoList.add(new JokeDto("4", "type", "setup", "punchline"));
-        jokeDtoList.add(new JokeDto("5", "type", "setup", "punchline"));
-        jokeDtoList.add(new JokeDto("6", "type", "setup", "punchline"));
-        jokeDtoList.add(new JokeDto("7", "type", "setup", "punchline"));
-        jokeDtoList.add(new JokeDto("8", "type", "setup", "punchline"));
-        jokeDtoList.add(new JokeDto("9", "type", "setup", "punchline"));
-        jokeDtoList.add(new JokeDto("10", "type", "setup", "punchline"));
-        return jokeDtoList;
-    }
 }
