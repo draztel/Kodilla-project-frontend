@@ -15,7 +15,9 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 
 @Route("gameView")
@@ -27,6 +29,7 @@ public class GameView extends VerticalLayout {
     private Grid grid = new Grid<>(GameDto.class);
     private GameForm gameForm = new GameForm();
 
+    private TextField filter = new TextField();
     private Button toMain = new Button("Main page");
     private Button toOffers = new Button("Offers");
     private Button toGames = new Button("Games");
@@ -52,7 +55,12 @@ public class GameView extends VerticalLayout {
         randomJoke.add(new Text(getRandomJoke()));
         randomJoke.setCloseOnOutsideClick(true);
 
-        HorizontalLayout navigate = new HorizontalLayout(toMain, toOffers, toGames, toMovies, toUsers);
+        filter.setPlaceholder("Filter by name");
+        filter.setClearButtonVisible(true);
+        filter.setValueChangeMode(ValueChangeMode.EAGER);
+        filter.addValueChangeListener(event -> getByName());
+
+        HorizontalLayout navigate = new HorizontalLayout(filter, toMain, toOffers, toGames, toMovies, toUsers, toFact, toJoke);
         grid.setColumns("name", "description", "price");
 
         HorizontalLayout mainContent = new HorizontalLayout(grid, gameForm);
@@ -64,6 +72,10 @@ public class GameView extends VerticalLayout {
 
     public void refresh() {
         grid.setItems(gameService.getGames());
+    }
+
+    private void getByName() {
+        grid.setItems(gameService.getGamesByName(filter.getValue()));
     }
 
     private String getRandomFact() {

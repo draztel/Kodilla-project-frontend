@@ -57,7 +57,7 @@ public class MainView extends VerticalLayout {
 
     private String getRandomJoke() {
         JokeDto jokeDto = jokeService.getRandomJoke();
-        return jokeDto.getPunchline() + "\n" +
-                jokeDto.getSetup();
+        return jokeDto.getSetup() + "\n" +
+                jokeDto.getPunchline();
     }
 }

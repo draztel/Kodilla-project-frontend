@@ -20,6 +20,7 @@ import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 
 @Route("offerView")
@@ -31,6 +32,7 @@ public class OfferView extends VerticalLayout {
     private Grid grid = new Grid<>(OfferDto.class);
     private OfferForm offerForm = new OfferForm();
 
+    private TextField filter = new TextField();
     private Button toMain = new Button("Main page");
     private Button toOffers = new Button("Offers");
     private Button toGames = new Button("Games");
@@ -56,7 +58,12 @@ public class OfferView extends VerticalLayout {
         randomJoke.add(new Text(getRandomJoke()));
         randomJoke.setCloseOnOutsideClick(true);
 
-        HorizontalLayout navigate = new HorizontalLayout(toMain, toOffers, toGames, toMovies, toUsers);
+        filter.setPlaceholder("Filter by name");
+        filter.setClearButtonVisible(true);
+        filter.setValueChangeMode(ValueChangeMode.EAGER);
+        filter.addValueChangeListener(event -> getByName());
+
+        HorizontalLayout navigate = new HorizontalLayout(filter, toMain, toOffers, toGames, toMovies, toUsers, toFact, toJoke);
         grid.setColumns("name", "description", "price");
 
         HorizontalLayout mainContent = new HorizontalLayout(grid, offerForm);
@@ -70,6 +77,10 @@ public class OfferView extends VerticalLayout {
         grid.setItems(offerService.getOffers());
     }
 
+    private void getByName() {
+        grid.setItems(offerService.getOffersByName(filter.getValue()));
+    }
+
     private String getRandomFact() {
         FactDto factDto = factService.getRandomFact();
         return factDto.getText();
@@ -77,7 +88,7 @@ public class OfferView extends VerticalLayout {
 
     private String getRandomJoke() {
         JokeDto jokeDto = jokeService.getRandomJoke();
-        return jokeDto.getPunchline() + "\n" +
-                jokeDto.getSetup();
+        return jokeDto.getSetup() + "\n" +
+                jokeDto.getPunchline();
     }
 }

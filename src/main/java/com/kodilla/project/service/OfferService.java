@@ -44,7 +44,7 @@ public class OfferService {
     }
 
     public List<OfferDto> getOffersByName(String name) throws HttpClientErrorException {
-        List<OfferDto> allOffers = restTemplate.getForObject("http://localhost:8080/v1/offer/name" + name, List.class);
+        List<OfferDto> allOffers = restTemplate.getForObject("http://localhost:8080/v1/offer/name/" + name, List.class);
 
         if(allOffers != null) {
             return allOffers;

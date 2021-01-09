@@ -18,7 +18,9 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 
 @Route("userView")
@@ -30,6 +32,7 @@ public class UserView extends VerticalLayout {
     private Grid grid = new Grid<>(UserDto.class);
     private UserForm userForm = new UserForm();
 
+    private TextField filter = new TextField();
     private Button toMain = new Button("Main page");
     private Button toOffers = new Button("Offers");
     private Button toGames = new Button("Games");
@@ -50,12 +53,17 @@ public class UserView extends VerticalLayout {
         toFact.addClickListener(event -> randomFact.open());
         toJoke.addClickListener(event -> randomJoke.open());
 
+        filter.setPlaceholder("Filter by firstname");
+        filter.setClearButtonVisible(true);
+        filter.setValueChangeMode(ValueChangeMode.EAGER);
+        filter.addValueChangeListener(event -> getByFirstname());
+
         randomFact.add(new Text(getRandomFact()));
         randomFact.setCloseOnOutsideClick(true);
         randomJoke.add(new Text(getRandomJoke()));
         randomJoke.setCloseOnOutsideClick(true);
 
-        HorizontalLayout navigate = new HorizontalLayout(toMain, toOffers, toGames, toMovies, toUsers);
+        HorizontalLayout navigate = new HorizontalLayout(filter, toMain, toOffers, toGames, toMovies, toUsers, toFact, toJoke);
         grid.setColumns("firstname", "lastname");
 
         HorizontalLayout mainContent = new HorizontalLayout(grid, userForm);
@@ -65,6 +73,10 @@ public class UserView extends VerticalLayout {
         setSizeFull();
     }
 
+    private void getByFirstname() {
+        grid.setItems(userService.getUsersByFirstname(filter.getValue()));
+    }
+
     public void refresh() {
         grid.setItems(userService.getUsers());
     }
@@ -72,11 +84,11 @@ public class UserView extends VerticalLayout {
     private String getRandomFact() {
         FactDto factDto = factService.getRandomFact();
         return factDto.getText();
-    }
+    } 
 
     private String getRandomJoke() {
         JokeDto jokeDto = jokeService.getRandomJoke();
-        return jokeDto.getPunchline() + "\n" +
-                jokeDto.getSetup();
+        return jokeDto.getSetup() + "\n" +
+                jokeDto.getPunchline();
     }
 }

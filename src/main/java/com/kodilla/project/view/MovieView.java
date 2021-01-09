@@ -15,6 +15,8 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 
 @Route("movieView")
@@ -26,6 +28,7 @@ public class MovieView extends VerticalLayout {
     private Grid grid = new Grid<>(MovieDto.class);
     private MovieForm movieForm = new MovieForm();
 
+    private TextField filter = new TextField();
     private Button toMain = new Button("Main page");
     private Button toOffers = new Button("Offers");
     private Button toGames = new Button("Games");
@@ -51,7 +54,12 @@ public class MovieView extends VerticalLayout {
         randomJoke.add(new Text(getRandomJoke()));
         randomJoke.setCloseOnOutsideClick(true);
 
-        HorizontalLayout navigate = new HorizontalLayout(toMain, toOffers, toGames, toMovies, toUsers);
+        filter.setPlaceholder("Filter by name");
+        filter.setClearButtonVisible(true);
+        filter.setValueChangeMode(ValueChangeMode.EAGER);
+        filter.addValueChangeListener(event -> getByName());
+
+        HorizontalLayout navigate = new HorizontalLayout(filter, toMain, toOffers, toGames, toMovies, toUsers, toFact, toJoke);
         grid.setColumns("name", "description", "author");
 
         HorizontalLayout mainContent = new HorizontalLayout(grid, movieForm);
@@ -62,7 +70,11 @@ public class MovieView extends VerticalLayout {
     }
 
     public void refresh() {
-        grid.setItems(movieService.getmovies());
+        grid.setItems(movieService.getMovies());
+    }
+
+    private void getByName() {
+        grid.setItems(movieService.getMoviesByName(filter.getValue()));
     }
 
     private String getRandomFact() {
@@ -72,7 +84,7 @@ public class MovieView extends VerticalLayout {
 
     private String getRandomJoke() {
         JokeDto jokeDto = jokeService.getRandomJoke();
-        return jokeDto.getPunchline() + "\n" +
-                jokeDto.getSetup();
+        return jokeDto.getSetup() + "\n" +
+                jokeDto.getPunchline();
     }
 }
