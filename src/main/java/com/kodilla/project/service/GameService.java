@@ -35,7 +35,7 @@ public class GameService {
     }
 
     public GameDto getGameById(final Long id) throws HttpServerErrorException {
-        GameDto gameDto = restTemplate.getForObject("http://localhost:8080/v1/game/" + id, GameDto.class);
+        GameDto gameDto = restTemplate.getForObject("http://localhost:8080/v1/game/id/" + id, GameDto.class);
 
         if(gameDto != null) {
             return gameDto;

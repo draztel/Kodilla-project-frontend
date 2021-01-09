@@ -34,8 +34,8 @@ public class UserService {
         }
     }
 
-    public UserDto getUser(final Long id) throws HttpServerErrorException {
-        UserDto userDto = restTemplate.getForObject("http://localhost:8080/v1/user/" + id, UserDto.class);
+    public UserDto getUserById(final Long id) throws HttpServerErrorException {
+        UserDto userDto = restTemplate.getForObject("http://localhost:8080/v1/user/id/" + id, UserDto.class);
 
         if(userDto != null) {
             return userDto;

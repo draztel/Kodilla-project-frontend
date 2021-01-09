@@ -53,8 +53,8 @@ public class OfferService {
         }
     }
 
-    public OfferDto getOffer(final Long id) throws HttpServerErrorException {
-        OfferDto offerDto = restTemplate.getForObject("http://localhost:8080/v1/offer/" + id, OfferDto.class);
+    public OfferDto getOfferById(final Long id) throws HttpServerErrorException {
+        OfferDto offerDto = restTemplate.getForObject("http://localhost:8080/v1/offer/id/" + id, OfferDto.class);
 
         if(offerDto != null) {
             return offerDto;

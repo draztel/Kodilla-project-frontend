@@ -35,8 +35,8 @@ public class MovieService {
         }
     }
 
-    public MovieDto getMovie(final Long id) throws HttpServerErrorException {
-        MovieDto movieDto = restTemplate.getForObject("http://localhost:8080/v1/movie/" + id, MovieDto.class);
+    public MovieDto getMovieById(final Long id) throws HttpServerErrorException {
+        MovieDto movieDto = restTemplate.getForObject("http://localhost:8080/v1/movie/id/" + id, MovieDto.class);
 
         if(movieDto != null) {
             return movieDto;
