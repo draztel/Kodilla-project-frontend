@@ -1,53 +1,52 @@
 package com.kodilla.project.service;
 
-import com.kodilla.project.domain.dto.GameDto;
 import com.kodilla.project.domain.dto.MovieDto;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.ArrayList;
+import java.net.URI;
+import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class MovieService {
     private RestTemplate restTemplate = new RestTemplate();
 
     public List<MovieDto> getMovies() throws HttpServerErrorException {
-        List<MovieDto> allMovies = restTemplate.getForObject("http://localhost:8080/v1/movie", List.class);
+        MovieDto[] allMovies = restTemplate.getForObject("http://localhost:8080/v1/movie", MovieDto[].class);
 
         if(allMovies != null) {
-            return allMovies;
+            return Arrays.asList(allMovies);
         } else {
-            return new ArrayList<>();
+            return Arrays.asList(new MovieDto[0]);
         }
     }
 
     public List<MovieDto> getMoviesByName(String name) throws HttpClientErrorException {
-        List<MovieDto> allMovies = restTemplate.getForObject("http://localhost:8080/v1/movie/name/" + name, List.class);
+        MovieDto[] allMovies = restTemplate.getForObject("http://localhost:8080/v1/movie/name/" + name, MovieDto[].class);
 
         if(allMovies != null) {
-            return allMovies;
+            return Arrays.asList(allMovies);
         } else {
-            return new ArrayList<>();
+            return Arrays.asList(new MovieDto[0]);
         }
     }
 
     public MovieDto getMovieById(final Long id) throws HttpServerErrorException {
-        MovieDto movieDto = restTemplate.getForObject("http://localhost:8080/v1/movie/id/" + id, MovieDto.class);
-
-        if(movieDto != null) {
-            return movieDto;
-        } else {
-            return new MovieDto();
-        }
+        return restTemplate.getForObject("http://localhost:8080/v1/movie/id/" + id, MovieDto.class);
     }
 
     public void createMovie(final MovieDto movieDto) throws HttpServerErrorException {
-        restTemplate.postForObject("http://localhost:8080/v1/movie", movieDto, MovieDto.class);
-    }
+        URI url = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/v1/movie")
+                .build().encode().toUri();
+        try {
+            restTemplate.postForObject(url, movieDto, MovieDto.class);
+        } catch (HttpClientErrorException e) {
+            System.out.println("This name probably exists");
+        }    }
 
     public void updateMovie(final MovieDto movieDto) throws HttpServerErrorException {
         restTemplate.put("http://localhost:8080/v1/movie", movieDto, MovieDto.class);

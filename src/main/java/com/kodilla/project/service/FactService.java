@@ -10,7 +10,7 @@ public class FactService {
     private RestTemplate restTemplate = new RestTemplate();
 
     public FactDto getRandomFact() throws HttpClientErrorException {
-        FactDto factDto = new FactDto("random fact");
+        FactDto factDto = restTemplate.getForObject("http://localhost:8080/v1/fact/random", FactDto.class);
         return factDto;
     }
 }

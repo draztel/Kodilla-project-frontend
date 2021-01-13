@@ -1,23 +1,21 @@
 package com.kodilla.project.service;
 
 import com.kodilla.project.domain.dto.OfferDto;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.net.URI;
+import java.util.*;
 
 @Service
 public class OfferService {
     private static OfferService offerServiceInstance = null;
+    private RestTemplate restTemplate = new RestTemplate();
 
     private OfferService() {
-
     }
 
     public static OfferService getInstance() {
@@ -31,40 +29,38 @@ public class OfferService {
         return offerServiceInstance;
     }
 
-    private RestTemplate restTemplate = new RestTemplate();
-
     public List<OfferDto> getOffers() throws HttpServerErrorException {
-        List<OfferDto> allOffers = restTemplate.getForObject("http://localhost:8080/v1/offer", List.class);
+        OfferDto[] allOffers = restTemplate.getForObject("http://localhost:8080/v1/offer", OfferDto[].class);
 
         if(allOffers != null) {
-            return allOffers;
+            return Arrays.asList(allOffers);
         } else {
-            return new ArrayList<>();
+            return Arrays.asList(new OfferDto[0]);
         }
     }
 
     public List<OfferDto> getOffersByName(String name) throws HttpClientErrorException {
-        List<OfferDto> allOffers = restTemplate.getForObject("http://localhost:8080/v1/offer/name/" + name, List.class);
+        OfferDto[] allOffers = restTemplate.getForObject("http://localhost:8080/v1/offer/name/" + name, OfferDto[].class);
 
         if(allOffers != null) {
-            return allOffers;
+            return Arrays.asList(allOffers);
         } else {
-            return new ArrayList<>();
+            return Arrays.asList(new OfferDto[0]);
         }
     }
 
     public OfferDto getOfferById(final Long id) throws HttpServerErrorException {
-        OfferDto offerDto = restTemplate.getForObject("http://localhost:8080/v1/offer/id/" + id, OfferDto.class);
-
-        if(offerDto != null) {
-            return offerDto;
-        } else {
-            return new OfferDto();
-        }
+        return restTemplate.getForObject("http://localhost:8080/v1/offer/id/" + id, OfferDto.class);
     }
 
     public void createOffer(final OfferDto offerDto) throws HttpServerErrorException {
-        restTemplate.postForObject("http://localhost:8080/v1/offer", offerDto, OfferDto.class);
+        URI url = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/v1/offer")
+                .build().encode().toUri();
+        try {
+            restTemplate.postForObject(url, offerDto, OfferDto.class);
+        } catch (HttpClientErrorException e) {
+            System.out.println("This name probably exists");
+        }
     }
 
     public void updateOffer(final OfferDto offerDto) throws HttpServerErrorException {

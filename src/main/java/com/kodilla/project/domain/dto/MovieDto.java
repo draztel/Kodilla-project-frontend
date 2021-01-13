@@ -22,10 +22,4 @@ public class MovieDto {
 
     @JsonProperty("author")
     private String author;
-
-    public MovieDto(String name, String description, String author) {
-        this.name = name;
-        this.description = description;
-        this.author = author;
-    }
 }

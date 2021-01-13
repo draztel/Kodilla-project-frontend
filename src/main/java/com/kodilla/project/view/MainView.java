@@ -34,12 +34,17 @@ public class MainView extends VerticalLayout {
         toGames.addClickListener(event -> toGames.getUI().ifPresent(ui -> ui.navigate("gameView")));
         toMovies.addClickListener(event -> toMovies.getUI().ifPresent(ui -> ui.navigate("movieView")));
         toUsers.addClickListener(event -> toUsers.getUI().ifPresent(ui -> ui.navigate("userView")));
-        toFact.addClickListener(event -> randomFact.open());
-        toJoke.addClickListener(event -> randomJoke.open());
-
-        randomFact.add(new Text(getRandomFact()));
+        toFact.addClickListener(event -> {
+            randomFact.removeAll();
+            randomFact.add(new Text(getRandomFact()));
+            randomFact.open();
+        });
+        toJoke.addClickListener(event -> {
+            randomJoke.removeAll();
+            randomJoke.add(new Text(getRandomJoke()));
+            randomJoke.open();
+        });
         randomFact.setCloseOnOutsideClick(true);
-        randomJoke.add(new Text(getRandomJoke()));
         randomJoke.setCloseOnOutsideClick(true);
 
         VerticalLayout buttons = new VerticalLayout(toMain, toOffers, toGames, toMovies, toUsers, toFact, toJoke);

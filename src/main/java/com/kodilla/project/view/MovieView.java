@@ -1,11 +1,7 @@
 package com.kodilla.project.view;
 
-import com.kodilla.project.domain.dto.FactDto;
-import com.kodilla.project.domain.dto.GameDto;
-import com.kodilla.project.domain.dto.JokeDto;
-import com.kodilla.project.domain.dto.MovieDto;
+import com.kodilla.project.domain.dto.*;
 import com.kodilla.project.service.FactService;
-import com.kodilla.project.service.GameService;
 import com.kodilla.project.service.JokeService;
 import com.kodilla.project.service.MovieService;
 import com.kodilla.project.view.form.MovieForm;
@@ -26,7 +22,7 @@ public class MovieView extends VerticalLayout {
     private JokeService jokeService = new JokeService();
 
     private Grid grid = new Grid<>(MovieDto.class);
-    private MovieForm movieForm = new MovieForm();
+    private MovieForm movieForm = new MovieForm(this);
 
     private TextField filter = new TextField();
     private Button toMain = new Button("Main page");
@@ -41,23 +37,35 @@ public class MovieView extends VerticalLayout {
     private Dialog randomJoke = new Dialog();
 
     public MovieView() {
+        grid.asSingleSelect().addValueChangeListener(event -> movieForm.setMovie((MovieDto) grid.asSingleSelect().getValue()));
         toMain.addClickListener(event -> toMain.getUI().ifPresent(ui -> ui.navigate("")));
         toOffers.addClickListener(event -> toOffers.getUI().ifPresent(ui -> ui.navigate("offerView")));
         toGames.addClickListener(event -> toGames.getUI().ifPresent(ui -> ui.navigate("gameView")));
         toMovies.addClickListener(event -> toMovies.getUI().ifPresent(ui -> ui.navigate("movieView")));
         toUsers.addClickListener(event -> toUsers.getUI().ifPresent(ui -> ui.navigate("userView")));
-        toFact.addClickListener(event -> randomFact.open());
-        toJoke.addClickListener(event -> randomJoke.open());
-
-        randomFact.add(new Text(getRandomFact()));
+        toFact.addClickListener(event -> {
+            randomFact.removeAll();
+            randomFact.add(new Text(getRandomFact()));
+            randomFact.open();
+        });
+        toJoke.addClickListener(event -> {
+            randomJoke.removeAll();
+            randomJoke.add(new Text(getRandomJoke()));
+            randomJoke.open();
+        });
         randomFact.setCloseOnOutsideClick(true);
-        randomJoke.add(new Text(getRandomJoke()));
         randomJoke.setCloseOnOutsideClick(true);
 
         filter.setPlaceholder("Filter by name");
         filter.setClearButtonVisible(true);
         filter.setValueChangeMode(ValueChangeMode.EAGER);
-        filter.addValueChangeListener(event -> getByName());
+        filter.addValueChangeListener(event -> {
+            if(filter.getValue().length() >= 1) {
+                getByName();
+            } else {
+                refresh();
+            }
+        });
 
         HorizontalLayout navigate = new HorizontalLayout(filter, toMain, toOffers, toGames, toMovies, toUsers, toFact, toJoke);
         grid.setColumns("name", "description", "author");
@@ -67,6 +75,7 @@ public class MovieView extends VerticalLayout {
         grid.setSizeFull();
         add(navigate, mainContent);
         setSizeFull();
+        refresh();
     }
 
     public void refresh() {

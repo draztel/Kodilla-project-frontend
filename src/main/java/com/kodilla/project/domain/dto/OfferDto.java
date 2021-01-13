@@ -1,6 +1,7 @@
 package com.kodilla.project.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,8 +9,8 @@ import lombok.Setter;
 @Setter
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class OfferDto {
-
     @JsonProperty("id")
     private Long id;
 
@@ -21,10 +22,4 @@ public class OfferDto {
 
     @JsonProperty("price")
     private double price;
-
-    public OfferDto(String name, String description, double price) {
-        this.name = name;
-        this.description = description;
-        this.price = price;
-    }
 }
