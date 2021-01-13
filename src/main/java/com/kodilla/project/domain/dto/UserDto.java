@@ -3,12 +3,14 @@ package com.kodilla.project.domain.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
-@AllArgsConstructor
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserDto {
     @JsonProperty("id")
     private Long id;
